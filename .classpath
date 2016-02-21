@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="Math/Plotter3D.java|Math/GroovyFunction2D.java" kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/java 3d/lib/ext/j3dcore.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/java 3d/lib/ext/j3dutils.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files (x86)/Java/java 3d/lib/ext/vecmath.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_65/lib/ext/jimStlMeshImporterJFX.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_65/lib/ext/jfxrt.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_65/lib/ext/ScenicView.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_65/lib/ext/poly2tri-core-0.1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jre1.8.0_65/lib/ext/JCSG.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Clément/workspace/FreedomFAO/lib/VWorkflows-Core.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Clément/workspace/FreedomFAO/lib/VWorkflows-FX.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

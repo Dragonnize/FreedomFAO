@@ -1,0 +1,23 @@
+package Math;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+
+/**
+ * Simple 1D function interface.
+ *
+ * @author Michael Hoffer &lt;info@michaelhoffer.de&gt;
+ */
+public interface Function1D {
+
+    /**
+     * Evaluates this function at x.
+     *
+     * @param x x value
+     * 
+     * @return the function value at x
+     */
+    public double run(double x);
+}
