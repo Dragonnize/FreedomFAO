@@ -7,12 +7,13 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	ObjectProperty ImportSTL2 = new SimpleObjectProperty(new FileImport(),"FileImport");
+	ObjectProperty ImportSTL2 = new SimpleObjectProperty(new ImportFile(),"FileImport");
 	MenuTop menuTop = new MenuTop();
-	FileImport ImportSTL = new FileImport();
+	ImportFile ImportSTL = new ImportFile();
 	BarBottom barBottom = new BarBottom();
 	ToolBarDisplay toolBar = new ToolBarDisplay();
 	public Stage Window;
+	public final String TITLE = "Freedom FAO";
 		
 	double factor = 0.50;
 	double RotateX = 0, RotateY = 0, RotateZ = 0;
@@ -25,6 +26,8 @@ public class Main extends Application {
 	    
 	public void start(Stage window) throws Exception {
 	    
+		window.setTitle(TITLE);
+		
 		VBox top = new VBox();
 		
 		top.getChildren().add(menuTop.init(window));

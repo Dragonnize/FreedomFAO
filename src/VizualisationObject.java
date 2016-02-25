@@ -30,8 +30,8 @@ public class VizualisationObject extends Information{
 	MeshView meshViews, meshView;
 	PhongMaterial material = new PhongMaterial();
 	
-	public Color diffuse = Color.BLUE;
-	public Color specular = Color.RED;
+	public Color diffuse = Color.GREY;
+	public Color specular = Color.WHITE;
 	
 	public TriangleMesh mesh;
 	public GeometryContainer prev;
@@ -47,9 +47,6 @@ public class VizualisationObject extends Information{
 		this.world = world;
 		this.axisGroup = axisGroup;
 		this.prev = new GeometryContainer(meshViews);
-		
-		// Voir cette fonction pour développer la fonctionnalité requise.
-		// plot(this.prev);
 	}
 
 	public MeshView buildObject() {
@@ -57,6 +54,7 @@ public class VizualisationObject extends Information{
 	    meshViews.setScaleX(MODEL_SCALE_FACTOR);
 	    meshViews.setScaleY(MODEL_SCALE_FACTOR);
 	    meshViews.setScaleZ(MODEL_SCALE_FACTOR);
+	    
 	    meshViews.setRotationAxis(Rotate.Z_AXIS);
 	    
         // setup material
@@ -76,43 +74,43 @@ public class VizualisationObject extends Information{
         meshView.setDrawMode(DrawMode.FILL); // fill the mesh (wire also possible)
         meshView.setCullFace(CullFace.NONE); // show both sides of the mesh
         
+        GeometryContainer geo = new GeometryContainer();
+        
         meshView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
-            	
+            	Point3D cords = new Point3D(event.getX(), event.getY(), event.getZ());
+            	//MouseBehaviorImpl1 mouseBehaviorImpl1 = new MouseBehaviorImpl1(Node.Node(1, cords),event.getButton());
                 event.consume();
             }
         });
-
-        GeometryContainer result;
-
-        // reuse previous container if available
-        if (prev != null) {
-            result = prev;
-            result.setView(meshView);
-        } else {
-            result = new GeometryContainer(meshView);
-        }
         
-        return result.getView();
+        if(geo.getView() != null) {
+        	return geo.getView();
+        }else{
+        	return meshView;
+        }
 	}
 	
+	public Group getAxisGroup() { return this.axisGroup; }
+	
 	public Group buildAxes() {
+		
+    	final PhongMaterial greenMaterial = new PhongMaterial(), 
+        					blueMaterial = new PhongMaterial(), 
+        					redMaterial = new PhongMaterial();
     	
-        final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.DARKRED);
         redMaterial.setSpecularColor(Color.RED);
 
-        final PhongMaterial greenMaterial = new PhongMaterial();
         greenMaterial.setDiffuseColor(Color.DARKGREEN);
         greenMaterial.setSpecularColor(Color.GREEN);
 
-        final PhongMaterial blueMaterial = new PhongMaterial();
         blueMaterial.setDiffuseColor(Color.DARKBLUE);
         blueMaterial.setSpecularColor(Color.BLUE);
 
-        final Box xAxis = new Box(240.0, 1, 1);
-        final Box yAxis = new Box(1, 240.0, 1);
-        final Box zAxis = new Box(1, 1, 240.0);
+        final Box xAxis = new Box(240.0, 1, 1),
+        		  yAxis = new Box(1, 240.0, 1),
+        		  zAxis = new Box(1, 1, 240.0);
         
         xAxis.setMaterial(redMaterial);
         yAxis.setMaterial(greenMaterial);

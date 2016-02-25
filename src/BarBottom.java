@@ -18,8 +18,6 @@ public class BarBottom extends Information{
         
         BorderPaneBottom.setRight(labelCoordonates);
         
-        System.out.println(primaryStage.widthProperty());
-        
         BorderPaneBottom.prefWidthProperty().bind(primaryStage.widthProperty());
         
         return BorderPaneBottom;

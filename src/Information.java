@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 
 public abstract class Information {
 	
-	public static final String TITLE = "Freedom FAO";
 	public static final double VERSION = 1.0;
 	public static final String ICON = "file:freedom-icon.png";
 	Color COLOR_SCENE = Color.WHITE;
@@ -41,8 +40,6 @@ public abstract class Information {
 	DoubleProperty currentX = new SimpleDoubleProperty(); // cordonnée actuel en X.
 	DoubleProperty currentY = new SimpleDoubleProperty(); // cordonnée actuel en Y.
 	DoubleProperty currentZ = new SimpleDoubleProperty(); // cordonnée actuel en Z.
-	
-	public String getTITLE() { return Information.TITLE; }
 	
 	public double getVERSION() { return Information.VERSION; }
 	
