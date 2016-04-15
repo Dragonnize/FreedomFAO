@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class MenuTop extends Information {
 	
 	Menu File = new Menu("_Fichier");
-	MenuItem open_file = new MenuItem("importer un fichier STL"), save_file = new MenuItem("enregistrer sous"), leave = new MenuItem("Quitter");
+	MenuItem open_file = new MenuItem("importer un fichier"), save_file = new MenuItem("enregistrer sous"), leave = new MenuItem("Quitter");
 	
 	Menu Edit = new Menu("_Edition");
 	Menu Edit_Choice_Procedure = new Menu("Choix de l'opération");
@@ -23,7 +23,9 @@ public class MenuTop extends Information {
 	MenuItem Edit_electroerosion = new MenuItem("Electroérosion");
 
 	Menu Display = new Menu("_Affichage"), Display_Axe = new Menu("Afficher les axes de référence");
-	CheckMenuItem Display_Axe_X = new CheckMenuItem("Axe X"), Display_Axe_Y = new CheckMenuItem("Axe Y"), Display_Axe_Z = new CheckMenuItem("Axe Z");
+	CheckMenuItem Display_Axe_X = new CheckMenuItem("Axe X"), 
+				  Display_Axe_Y = new CheckMenuItem("Axe Y"), 
+				  Display_Axe_Z = new CheckMenuItem("Axe Z");
 	
 	Menu Others = new Menu("_Autres");
 	MenuItem help = new MenuItem("aide"), version = new MenuItem("version");
@@ -32,14 +34,14 @@ public class MenuTop extends Information {
 	
 	public MenuBar getMenuBar() { return this.menuBar; }
 	
-	public MenuBar init(Stage primaryStage) {
+	public MenuBar init(Stage primaryStage, Window window) {
     	
 		//this.menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
 		
         // Menu Fichier
         File.getItems().add(open_file);
         open_file.setOnAction(event -> {
-			// TODO Auto-generated method stub
+			window.createScene(primaryStage);
 		});
 
         File.getItems().add(save_file);

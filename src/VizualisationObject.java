@@ -24,283 +24,37 @@ import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
-public class VizualisationObject extends Information{
+public class VizualisationObject {
 	
-	Group axisGroup, world;
-	MeshView meshViews, meshView;
-	PhongMaterial material = new PhongMaterial();
-	
-	public Color diffuse = Color.GREY;
-	public Color specular = Color.WHITE;
-	
+	public MeshView meshView;
 	public TriangleMesh mesh;
 	public GeometryContainer prev;
-	private final PickingEvtHandler evtHandler = new PickingEvtHandler();
-    private VNode node;
-    private Point3D selectedPoint;
-    private Double selectedValue;
-    private VNode selectionReceiver;
 
-	public VizualisationObject(TriangleMesh file, Xform world, Group axisGroup) {
-		this.mesh = file;
-		this.meshViews = new MeshView(file);
-		this.world = world;
-		this.axisGroup = axisGroup;
-		this.prev = new GeometryContainer(meshViews);
+	public VizualisationObject(TriangleMesh file) {
+		this.meshView = new MeshView(file);
 	}
+	
+	public MeshView getMeshView() { return this.meshView; }
 
-	public MeshView buildObject() {
+	public MeshView buildObject(Color diffuse, Color specular, double ScaleFactor) {
+		
+		PhongMaterial material = new PhongMaterial();
 	      
-	    meshViews.setScaleX(MODEL_SCALE_FACTOR);
-	    meshViews.setScaleY(MODEL_SCALE_FACTOR);
-	    meshViews.setScaleZ(MODEL_SCALE_FACTOR);
+	    meshView.setScaleX(ScaleFactor);
+	    meshView.setScaleY(ScaleFactor);
+	    meshView.setScaleZ(ScaleFactor);
 	    
-	    meshViews.setRotationAxis(Rotate.Z_AXIS);
+	    meshView.setRotationAxis(Rotate.Z_AXIS);
 	    
         // setup material
         material.setDiffuseColor(diffuse);
         material.setSpecularColor(specular);
-        
-        // reuse mesh view from prev container if avalable
-        if (prev != null && prev.getView() != null) {
-            meshView = prev.getView();
-            meshView.setMesh(mesh);
-        } else {
-            meshView = new MeshView(mesh);
-        }
         
         // setup material & draw mode
         meshView.setMaterial(material);
         meshView.setDrawMode(DrawMode.FILL); // fill the mesh (wire also possible)
         meshView.setCullFace(CullFace.NONE); // show both sides of the mesh
         
-        GeometryContainer geo = new GeometryContainer();
-        
-        meshView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
-            	Point3D cords = new Point3D(event.getX(), event.getY(), event.getZ());
-            	//MouseBehaviorImpl1 mouseBehaviorImpl1 = new MouseBehaviorImpl1(Node.Node(1, cords),event.getButton());
-                event.consume();
-            }
-        });
-        
-        if(geo.getView() != null) {
-        	return geo.getView();
-        }else{
-        	return meshView;
-        }
+        return meshView;
 	}
-	
-	public Group getAxisGroup() { return this.axisGroup; }
-	
-	public Group buildAxes() {
-		
-    	final PhongMaterial greenMaterial = new PhongMaterial(), 
-        					blueMaterial = new PhongMaterial(), 
-        					redMaterial = new PhongMaterial();
-    	
-        redMaterial.setDiffuseColor(Color.DARKRED);
-        redMaterial.setSpecularColor(Color.RED);
-
-        greenMaterial.setDiffuseColor(Color.DARKGREEN);
-        greenMaterial.setSpecularColor(Color.GREEN);
-
-        blueMaterial.setDiffuseColor(Color.DARKBLUE);
-        blueMaterial.setSpecularColor(Color.BLUE);
-
-        final Box xAxis = new Box(240.0, 1, 1),
-        		  yAxis = new Box(1, 240.0, 1),
-        		  zAxis = new Box(1, 1, 240.0);
-        
-        xAxis.setMaterial(redMaterial);
-        yAxis.setMaterial(greenMaterial);
-        zAxis.setMaterial(blueMaterial);
-        
-		axisGroup.getChildren().addAll(xAxis, yAxis, zAxis);
-		
-		return axisGroup;
-    }
-
-	//rotation behavior implementation
-	class MouseBehaviorImpl1 implements EventHandler<MouseEvent> {
-	
-		 private double anchorAngleX;
-		 private double anchorAngleY;
-		 private double anchorX;
-		 private double anchorY;
-		 private final Rotate rotateX = new Rotate(0, 0, 0, 0, Rotate.X_AXIS);
-		 private final Rotate rotateZ = new Rotate(0, 0, 0, 0, Rotate.Z_AXIS);
-		 private MouseButton btn;
-		
-		 public MouseBehaviorImpl1(Node n, MouseButton btn) {
-		     n.getTransforms().addAll(rotateX, rotateZ);
-		     this.btn = btn;
-		
-		     if (btn == null) {
-		         this.btn = MouseButton.MIDDLE;
-		     }
-		 }
-		
-		 @Override
-		 public void handle(MouseEvent t) {
-		     if (!btn.equals(t.getButton())) {
-		         return;
-		     }
-		
-		     t.consume();
-		
-		     if (MouseEvent.MOUSE_PRESSED.equals(t.getEventType())) {
-		         anchorX = t.getSceneX();
-		         anchorY = t.getSceneY();
-		         anchorAngleX = rotateX.getAngle();
-		         anchorAngleY = rotateZ.getAngle();
-		         t.consume();
-		     } else if (MouseEvent.MOUSE_DRAGGED.equals(t.getEventType())) {
-		         rotateZ.setAngle(anchorAngleY + (anchorX - t.getSceneX()) * 0.7);
-		         rotateX.setAngle(anchorAngleX - (anchorY - t.getSceneY()) * 0.7);
-		
-		     }
-	
-		 }
-	}
-
-    public GeometryContainer plot(GeometryContainer prevView) {
-
-        if (prevView != null) {
-            prevView.removeEventHandler(MouseEvent.ANY, evtHandler);
-        }
-
-		GeometryContainer geometry = VFX3DUtil.meshToParent(prevView, mesh,
-                MouseEvent.ANY, evtHandler);
-
-        evtHandler.updateValue(null, true);
-
-        return geometry;
-    }
-
-    /**
-     * @return the node
-     */
-    public VNode getNode() {
-        return node;
-    }
-
-    /**
-     * @param node the node to set
-     */
-    public void setNode(VNode node) {
-        this.node = node;
-    }
-
-    void setSelectionReceiver(VNode node) {
-
-        if (this.selectionReceiver != null) {
-            this.selectionReceiver.getValueObject().
-                    setValue(new SelectionResult());
-        }
-
-        this.selectionReceiver = node;
-    }
-
-    class PickingEvtHandler implements EventHandler<MouseEvent> {
-
-        private Circle c = new Circle(10);
-        private Function2D function;
-
-        public PickingEvtHandler() {
-            c.setFill(new Color(0.0, 1.0, 0.2, 0.5));
-            c.setStroke(new Color(1.0, 1.0, 1.0, 0.4));
-            c.setStrokeWidth(2);
-
-            Timeline timeline = new Timeline(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(c.radiusProperty(), c.getRadius())),
-                    new KeyFrame(Duration.millis(800),
-                            new KeyValue(c.radiusProperty(), c.getRadius() * 2.5)));
-            
-            timeline.setAutoReverse(true);
-            timeline.setCycleCount(Timeline.INDEFINITE);
-            timeline.play();
-        }
-
-        @Override
-        public void handle(MouseEvent event) {
-            selectedPoint = event.getPickResult().getIntersectedPoint();
-
-            if (event.getEventType() != MouseEvent.MOUSE_CLICKED) {
-                return;
-            }
-
-            if (event.getButton() != MouseButton.SECONDARY) {
-                return;
-            }
-
-            if (!(event.getSource() instanceof Group)) {
-                return;
-            }
-
-            final Group group = (Group) event.getSource();
-
-            if (group.getParent() == null) {
-                return;
-            }
-
-            updateValue(group, false);
-        }
-
-        /**
-         * @return the function
-         */
-        public Function2D getFunction() {
-            return function;
-        }
-
-        /**
-         * @param function the function to set
-         */
-        public void setFunction(Function2D function) {
-            this.function = function;
-        }
-
-        private void updateValue(Group group, boolean scaled) {
-            
-            c.toFront();
-
-            if (selectedPoint == null) {
-                return;
-            }                  
-
-            if (c.getParent() != group && group != null) {
-                NodeUtil.addToParent(group, c);
-            }
-
-            if (!scaled) {
-                
-                c.setTranslateX(selectedPoint.getX());
-                c.setTranslateY(selectedPoint.getY());
-                c.setTranslateZ(selectedPoint.getZ());
-                
-                selectedPoint = new Point3D(
-                        selectedPoint.getX() / scaleX,
-                        selectedPoint.getY() / scaleY,
-                        selectedPoint.getZ() / scaleZ);
-            }
-
-//            System.out.println("point: " + selectedPoint);
-            if (selectedPoint != null) {
-                selectedValue = getFunction().run(selectedPoint.getX(),
-                        selectedPoint.getY());
-
-                if (selectionReceiver != null) {
-                    selectionReceiver.getValueObject().setValue(
-                            new SelectionResult(
-                                    selectedPoint, selectedValue));
-                }
-
-//                System.out.println("value = " + selectedValue);
-            } else {
-                selectedValue = null;
-            }
-        }
-    }
 }

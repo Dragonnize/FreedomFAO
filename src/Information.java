@@ -8,7 +8,6 @@ import javafx.scene.paint.Color;
 public abstract class Information {
 	
 	public static final double VERSION = 1.0;
-	public static final String ICON = "file:freedom-icon.png";
 	Color COLOR_SCENE = Color.WHITE;
 	public final int DEBUG = 1; // Si 1 alors c'est en mode débugage sinon si c'est 0 c'est en mode application public.
 	
@@ -21,10 +20,6 @@ public abstract class Information {
 	public final double MODEL_MAX_X = 0;
 	public final double MODEL_MIN_Y = 0;
 	public final double MODEL_MAX_Y = 0;
-	
-	public final float scaleX = 12;
-    public final float scaleY = 12;
-    public final float scaleZ = 12;
 	
 	double mousePosX, mouseOldX;
     double mousePosY, mouseOldY;
@@ -42,8 +37,6 @@ public abstract class Information {
 	DoubleProperty currentZ = new SimpleDoubleProperty(); // cordonnée actuel en Z.
 	
 	public double getVERSION() { return Information.VERSION; }
-	
-	public String getICON() { return Information.ICON; }
 	
 	// Ancienne cordonnées de la souris en X, Y et Z.
 	public void setMouseOldX(double X) { this.mouseOldX = X; }

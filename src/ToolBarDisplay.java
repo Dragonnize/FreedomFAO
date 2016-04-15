@@ -52,9 +52,8 @@ public class ToolBarDisplay {
 	    */
 	    process.setOnAction(new EventHandler<ActionEvent>() {
 
-			@Override
 			public void handle(ActionEvent event) {
-								
+				
 			}
 	    	
 	    });

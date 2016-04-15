@@ -55,64 +55,40 @@ import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class ActionScene extends Information {
-	
-	final Group root = new Group();
-    final Group axisGroup = new Group();
-    final Xform world = new Xform();
+public class ActionScene {
+
     final PerspectiveCamera camera = new PerspectiveCamera(false);
     
     ActionSubScene GlobalSubScene;
 	Scene scene;
 	MeshView meshViews;
 	Group FileEnd;
+	Stage Window;
 
 	//private Group root;
 	private PointLight pointLight;
 	
-	public Camera getCamera() { return this.camera; }
+	public PerspectiveCamera getCamera() { return this.camera; }
 	public Group getFileEnd() { return this.FileEnd; }
 	public void setFileEnd(Group file) { this.FileEnd = file; }
 	public Scene getScene() { return this.scene; }
+	public Stage getWindow() { return this.Window; }
 	
-	public ActionScene(Stage window, BorderPane rootLayout, TriangleMesh fileSTL) throws Exception {
-		
-		initInformations();
-		
-		root.getChildren().add(world);
-		
-		VizualisationObject vizu3D = new VizualisationObject(fileSTL, world, axisGroup);
-		world.getChildren().add(vizu3D.buildObject());
-		world.getChildren().addAll(vizu3D.buildAxes());
-		
-		window.getIcons().add(new Image(this.getICON()));
-		
-		ActionSubScene GlobalSubScene = new ActionSubScene(root, 1000.00, 600.00);
-		GlobalSubScene.buildCamera(root);
-		root.getChildren().add(GlobalSubScene.getCamera());
-        // modifier par subScene.setLayout
-        //subScene
-        
-        GlobalSubScene.handleKeyboard(this.world, window, camera, vizu3D.getAxisGroup());
-        
-        root.getChildren().addAll(GlobalSubScene.getSubScene());
-        
-        rootLayout.setCenter(GlobalSubScene.getSubScene());
+	public ActionScene(){
         
         //rootLayout.prefHeightProperty().bind(subScene.heightProperty());
         //rootLayout.prefWidthProperty().bind(subScene.widthProperty());
-		
+    }
+	
+	public void createScene(BorderPane rootLayout) {
 		scene = new Scene(rootLayout);
-		GlobalSubScene.handleMouse(scene, this.world, meshViews);
-		
-		window.setScene(scene);
-		
+	}
+	
+	public void render() {
 		// Pour la version de développement
-       //	ScenicView.show(scene);
-		
-        window.show();
+		// ScenicView.show(scene);
         
         scene.setCamera(camera);
-
     }
+	
 }

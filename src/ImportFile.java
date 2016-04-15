@@ -6,20 +6,24 @@ import javax.swing.JFileChooser;
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
 
+import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.stage.FileChooser;
 
 public class ImportFile {
 
 	StlMeshImporter stlImporter = new StlMeshImporter();
-	TriangleMesh meshSTL3D;
-	JFileChooser dialogue;
-	boolean importFile = false;
-	TriangleMesh file;
-	FileChooser fileChooser = new FileChooser();
 	
-	public void setFile3D(TriangleMesh file) { this.meshSTL3D = file; }
-	public TriangleMesh getFile3D() { return this.meshSTL3D; }
+	TriangleMesh triangleMesh;
+	JFileChooser dialogue;
+	FileChooser fileChooser = new FileChooser();
+	MeshView meshView;
+	
+	// Les format d'entrées des données.
+	String inputTab[];
+	
+	public TriangleMesh getTriangleMesh() { return this.triangleMesh; }
+	public MeshView getMeshView() { return this.meshView; }
 	
 	public void choiceFile() {
 		
@@ -51,9 +55,11 @@ public class ImportFile {
 				return;
 			}
 			
-			this.setFile3D(stlImporter.getImport());
+			this.triangleMesh = stlImporter.getImport();
 			
 			this.stlImporter.close();
         }
+        
+        meshView = new MeshView(this.getTriangleMesh());
 	}
 }

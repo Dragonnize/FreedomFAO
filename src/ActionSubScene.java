@@ -41,7 +41,7 @@ public class ActionSubScene extends Information{
 	}
 
 	public ActionSubScene(Parent root, double width, double height, boolean depthBuffer, SceneAntialiasing antiAliasing) {
-		subScene = new SubScene(root, width, height, true, SceneAntialiasing.DISABLED);
+		subScene = new SubScene(root, width, height, depthBuffer, antiAliasing);
 		subScene.setFill(colorBackground);
 		subScene.setCamera(subSceneCamera);
 	}
@@ -50,7 +50,7 @@ public class ActionSubScene extends Information{
 	
 	public PerspectiveCamera getSubSceneCamera() { return this.subSceneCamera; }
 	
-    public void buildCamera(Group root) {
+    public void buildCamera() {
     	
         cameraXform.getChildren().add(cameraXform2);
         cameraXform2.getChildren().add(cameraXform3);
