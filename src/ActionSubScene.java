@@ -70,7 +70,7 @@ public class ActionSubScene extends Information{
     	return this.cameraXform;
     }
 	
-	public void handleMouse(Scene scene, final Node root, MeshView mesh) {
+	public void handleMouse(Scene scene, final Node root) {
     	
         subScene.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -133,7 +133,7 @@ public class ActionSubScene extends Information{
     }
 	
 	public void handleKeyboard(final Node root, Stage window, PerspectiveCamera camera, Group axisGroup) {
-        final boolean moveCamera = true;
+        
         subScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

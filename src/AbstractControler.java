@@ -13,7 +13,6 @@ public abstract class AbstractControler {
 		this.Model = model;
 		init();
 		Model.getRoot().getChildren().add(this.getWorld());
-		
 	}
 	
 	public void init() {
@@ -31,10 +30,12 @@ public abstract class AbstractControler {
 	public String getNameFile() { return this.Model.nameFile; }
 	public String getNameAxes() { return this.Model.nameAxes; }
 	
+	public Group getGroupAxes() { return this.Model.groupAxes; }
+	
 	public void newFile() {
 		
 		if(this.getNameFile() != null && this.getNameAxes() != null) {
-			getWorld().getChildren().remove(0);
+			getWorld().getChildren().remove(0); 
 			getWorld().getChildren().remove(0);
 		}
 	
@@ -51,10 +52,11 @@ public abstract class AbstractControler {
 		getWorld().getChildren().add(select.getMeshView());
 		
 		VizualisationAxes vizu3DAxes = new VizualisationAxes();
-		getWorld().getChildren().add(vizu3DAxes.buildAxes());
-		this.setNameAxes(vizu3DAxes.buildAxes().toString());
+		vizu3DAxes.buildAxes();
 		
-		
+		Model.groupAxes = vizu3DAxes.getAxisGroup();
+		getWorld().getChildren().add(getGroupAxes());
+		this.setNameAxes(getGroupAxes().toString());
 	}
 	
 	public void initCordsVizualisation(MouseEvent event) {

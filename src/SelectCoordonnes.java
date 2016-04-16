@@ -49,7 +49,6 @@ public class SelectCoordonnes{
 	public SelectCoordonnes(TriangleMesh mesh, MeshView meshView) {
 		
 		//meshView.addEventHandler(MouseEvent.ANY, evtHandler);
-	
 		
 		GeometryContainer prevView = new GeometryContainer(meshView);
 		
@@ -60,11 +59,7 @@ public class SelectCoordonnes{
 		
 		// la variable evtHandler sert stocker la valeur de la variable function qui va être utiliser ensuite pour générer un affichage.
 		
-		
-		
-		geometry = meshToParent(prevView, mesh,
-		        Color.BLUE, Color.WHITE, MouseEvent.ANY, evtHandler);
-		
+		geometry = meshToParent(prevView, mesh, MouseEvent.ANY, evtHandler);
 		
 		evtHandler.updateValue(null, true);
 		
@@ -72,11 +67,10 @@ public class SelectCoordonnes{
     }
 	
 	public static GeometryContainer meshToParent(GeometryContainer prev,
-            TriangleMesh mesh, Color diffuse, Color specular,
-            EventType<MouseEvent> type, EventHandler<MouseEvent> evtHandler) {
+            TriangleMesh mesh, EventType<MouseEvent> type, EventHandler<MouseEvent> evtHandler) {
 
         // convert mesh to node (via meshview)
-        final GeometryContainer meshNode = meshToNode(prev, mesh, diffuse, specular);
+        final GeometryContainer meshNode = meshToNode(prev, mesh);
 
         // add the specified eventhandler (if any)
         if (type != null && evtHandler != null) {
@@ -87,14 +81,9 @@ public class SelectCoordonnes{
     }
 	
 	public static GeometryContainer meshToNode(GeometryContainer prev,
-            TriangleMesh mesh, Color diffuse, Color specular) {
+            TriangleMesh mesh) {
 
         // material that shall be used to visualize the mesh
-        PhongMaterial material = new PhongMaterial();
-        
-        // setup material
-        material.setDiffuseColor(diffuse);
-        material.setSpecularColor(specular);
         MeshView meshView;
 
         // reuse mesh view from prev container if avalable
@@ -105,8 +94,6 @@ public class SelectCoordonnes{
             meshView = new MeshView(mesh);
         }
         
-        // setup material & draw mode
-        meshView.setMaterial(material);
         meshView.setDrawMode(DrawMode.FILL); // fill the mesh (wire also possible)
         meshView.setCullFace(CullFace.NONE); // show both sides of the mesh
 

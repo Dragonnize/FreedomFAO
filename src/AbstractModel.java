@@ -12,6 +12,8 @@ public abstract class AbstractModel implements Observable{
 	
 	private ArrayList<Observer> listObserver = new ArrayList<Observer>();
 	
+	Group groupAxes;
+	
 	DoubleProperty cordX = new SimpleDoubleProperty();
 	DoubleProperty cordY = new SimpleDoubleProperty();
 	DoubleProperty cordZ = new SimpleDoubleProperty();

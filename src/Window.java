@@ -65,6 +65,9 @@ public class Window implements Observer{
         //rootLayout.prefWidthProperty().bind(subScene.widthProperty());
 	    
 	    actionScene.render();
+	    
+	    GlobalSubScene.handleKeyboard(controler.getWorld(), window, actionScene.getCamera(), controler.getGroupAxes());
+		GlobalSubScene.handleMouse(actionScene.getScene(), controler.getWorld());
 
 		window.setScene(actionScene.getScene());
 		
@@ -188,8 +191,8 @@ public class Window implements Observer{
 	}
 
 	public void update(String str) {
-		GlobalSubScene.handleKeyboard(controler.getWorld(), Window, actionScene.getCamera(), vizu3DAxes.getAxisGroup());
-		GlobalSubScene.handleMouse(actionScene.getScene(), controler.getWorld(), controler.getFile().getMeshView());
+		//GlobalSubScene.handleKeyboard(controler.getWorld(), Window, actionScene.getCamera(), vizu3DAxes.getAxisGroup());
+		//GlobalSubScene.handleMouse(actionScene.getScene(), controler.getWorld(), controler.getFile().getMeshView());
 	}
 
 }
