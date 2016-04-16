@@ -12,6 +12,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -19,7 +20,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Paint;
+import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.CullFace;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
@@ -44,40 +48,79 @@ public class SelectCoordonnes{
 	
 	public SelectCoordonnes(TriangleMesh mesh, MeshView meshView) {
 		
-		meshView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			public void handle(MouseEvent event) {
-				
-				
-				
-			}
-			
-		});
-		
-		
-		meshView.addEventHandler(MouseEvent.ANY, evtHandler);
+		//meshView.addEventHandler(MouseEvent.ANY, evtHandler);
 	
 		
-	/*GeometryContainer prevView = new GeometryContainer(meshView);
-	
-	// voit si la variable preview est différente de vide et si c'est le cas il supprime ça valeur.
-	/*if (prevView != null) {
-	    prevView.removeEventHandler(MouseEvent.ANY, evtHandler);
-	}*/
-	
-	// la variable evtHandler sert stocker la valeur de la variable function qui va être utiliser ensuite pour générer un affichage.
-	
-	
-	
-	/*geometry = VFX3DUtil.meshToParent(prevView, mesh,
-	        MouseEvent.ANY, evtHandler);*/
-	
-	
-	/*evtHandler.updateValue(null, true);*/
+		GeometryContainer prevView = new GeometryContainer(meshView);
 		
-        //c.setFill(new Color(0.0, 1.0, 0.2, 0.5));
-        //c.setStroke(new Color(1.0, 1.0, 1.0, 0.4));
+		// voit si la variable preview est différente de vide et si c'est le cas il supprime ça valeur.
+		if (prevView != null) {
+		    prevView.removeEventHandler(MouseEvent.ANY, evtHandler);
+		}
+		
+		// la variable evtHandler sert stocker la valeur de la variable function qui va être utiliser ensuite pour générer un affichage.
+		
+		
+		
+		geometry = meshToParent(prevView, mesh,
+		        Color.BLUE, Color.WHITE, MouseEvent.ANY, evtHandler);
+		
+		
+		evtHandler.updateValue(null, true);
+		
         this.MeshView = meshView;
+    }
+	
+	public static GeometryContainer meshToParent(GeometryContainer prev,
+            TriangleMesh mesh, Color diffuse, Color specular,
+            EventType<MouseEvent> type, EventHandler<MouseEvent> evtHandler) {
+
+        // convert mesh to node (via meshview)
+        final GeometryContainer meshNode = meshToNode(prev, mesh, diffuse, specular);
+
+        // add the specified eventhandler (if any)
+        if (type != null && evtHandler != null) {
+            meshNode.getGroup().addEventHandler(type, evtHandler);
+        }
+
+        return meshNode;
+    }
+	
+	public static GeometryContainer meshToNode(GeometryContainer prev,
+            TriangleMesh mesh, Color diffuse, Color specular) {
+
+        // material that shall be used to visualize the mesh
+        PhongMaterial material = new PhongMaterial();
+        
+        // setup material
+        material.setDiffuseColor(diffuse);
+        material.setSpecularColor(specular);
+        MeshView meshView;
+
+        // reuse mesh view from prev container if avalable
+        if (prev != null && prev.getView() != null) {
+            meshView = prev.getView();
+            meshView.setMesh(mesh);
+        } else {
+            meshView = new MeshView(mesh);
+        }
+        
+        // setup material & draw mode
+        meshView.setMaterial(material);
+        meshView.setDrawMode(DrawMode.FILL); // fill the mesh (wire also possible)
+        meshView.setCullFace(CullFace.NONE); // show both sides of the mesh
+
+        GeometryContainer result;
+
+        // reuse previous container if available
+        if (prev != null) {
+            result = prev;
+            result.setView(meshView);
+        } else {
+            result = new GeometryContainer(meshView);
+        }
+
+        return result;
     }
 
 	//rotation behavior implementation
