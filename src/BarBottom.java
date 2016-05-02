@@ -23,15 +23,13 @@ public class BarBottom extends Information{
 		return this.labelCoordonates;
 	}
 	
-	public BorderPane init(Stage primaryStage) {
+	public BorderPane init(Stage window) {
 		
 		BorderPane BorderPaneBottom = new BorderPane();
 		
 		labelCoordonates.setText("X : " + this.getDisplayX() + ", Y : "+this.getDisplayY()+", Z : "+this.getDisplayZ());
         
-        BorderPaneBottom.setRight(labelCoordonates);
-        
-       // BorderPaneBottom.prefWidthProperty().valueProperty().bind(primaryStage.widthProperty());
+        BorderPaneBottom.setCenter(labelCoordonates);
         
         return BorderPaneBottom;
 	}

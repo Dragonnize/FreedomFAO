@@ -1,4 +1,5 @@
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sun.prism.paint.Color;
 
@@ -11,6 +12,7 @@ import eu.mihosoft.vrl.workflow.fx.NodeUtil;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Point3D;
@@ -19,23 +21,23 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CullFace;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.MeshView;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
-public class SelectCoordonnes{
+public class SelectCoordonnes extends StackPane{
 	
 	private double scaleX, scaleY, scaleZ;
 	private Point3D selectedPoint;
 	private Double selectedValue;
-	private VNode selectionReceiver;
-	private VNode node;
 	private final PickingEvtHandler evtHandler = new PickingEvtHandler();
 
 	Point3D point = new Point3D(0, 0, 0);
@@ -43,28 +45,98 @@ public class SelectCoordonnes{
 	Color colorCircle = Color.RED;
 	GeometryContainer geometry;
 	public MeshView MeshView;
+	Group Group;
+	boolean booleanTarget = false;
 	
 	public MeshView getMeshView() { return this.MeshView; }
 	
 	public SelectCoordonnes(TriangleMesh mesh, MeshView meshView) {
 		
-		//meshView.addEventHandler(MouseEvent.ANY, evtHandler);
+		this.init();
+        
+		Group.getChildren().add(meshView);
 		
-		GeometryContainer prevView = new GeometryContainer(meshView);
+		meshView.addEventHandler(MouseEvent.ANY, evtHandler);
 		
-		// voit si la variable preview est différente de vide et si c'est le cas il supprime ça valeur.
-		if (prevView != null) {
-		    prevView.removeEventHandler(MouseEvent.ANY, evtHandler);
-		}
+		Group.getChildren().add(evtHandler.getGroup());
+		
+		//groupSelector.getChildren().add(evtHandler.getCircle());
 		
 		// la variable evtHandler sert stocker la valeur de la variable function qui va être utiliser ensuite pour générer un affichage.
 		
-		geometry = meshToParent(prevView, mesh, MouseEvent.ANY, evtHandler);
+		//geometry = meshToParent(prevView, mesh, MouseEvent.ANY, evtHandler);
 		
-		evtHandler.updateValue(null, true);
+		//evtHandler.updateValue(null, true);
 		
         this.MeshView = meshView;
     }
+	
+	public void init() {
+		
+		Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(widthProperty());
+        clip.heightProperty().bind(heightProperty());
+        setClip(clip);
+
+        Group = new Group();
+        
+        //getChildren().add(getGroup());
+
+        // add rotation behavior
+        //VFX3DUtil.addMouseBehavior(getGroup(), getGroup(), MouseButton.PRIMARY);
+
+        setMinSize(0, 0);
+	}
+
+    /**
+     * group that contains the mesh view and optionally other nodes for
+     * additional visualizations (e.g. ray picking circle)
+     */
+    private Group group;
+    
+    /**
+     * @param view the view to set
+     */
+    public final void setView(MeshView view) {
+
+        // remove all previously added mesh views
+        List<Node> nodesToRemove
+                = getGroup().getChildren().stream().filter(
+                        e -> e instanceof MeshView).
+                collect(Collectors.toList());
+
+        getGroup().getChildren().removeAll(nodesToRemove);
+        
+        // finally add the new view
+        getGroup().getChildren().add(view);
+
+    }
+
+    /**
+     * @return the group
+     */
+    public Group getGroup() {
+        return group;
+    }
+
+    /**
+     * Clears this container (removes all children).
+     */
+    public void clear() {
+        getChildren().clear();
+
+        group = new Group();
+        getChildren().add(getGroup());
+
+        // add rotation behavior
+        VFX3DUtil.addMouseBehavior(getGroup(), getGroup(), MouseButton.PRIMARY);
+    }
+    
+    
+    
+    
+	
+	public Group getGroupSelector() { return Group; }
 	
 	public static GeometryContainer meshToParent(GeometryContainer prev,
             TriangleMesh mesh, EventType<MouseEvent> type, EventHandler<MouseEvent> evtHandler) {
@@ -130,7 +202,6 @@ public class SelectCoordonnes{
 		     }
 		 }
 		
-		 @Override
 		 public void handle(MouseEvent t) {
 		     if (!btn.equals(t.getButton())) {
 		         return;
@@ -147,7 +218,6 @@ public class SelectCoordonnes{
 		     } else if (MouseEvent.MOUSE_DRAGGED.equals(t.getEventType())) {
 		         rotateZ.setAngle(originAngleY + (originX - t.getSceneX()) * 0.7);
 		         rotateX.setAngle(originAngleX - (originY - t.getSceneY()) * 0.7);
-		
 		     }
 	
 		 }
@@ -155,8 +225,8 @@ public class SelectCoordonnes{
 	
 	class PickingEvtHandler implements EventHandler<MouseEvent> {
 
-        private Circle c = new Circle(10);
-        private Function2D function;
+        public Circle c = new Circle(10);
+        public Group groupSelector = new Group();
 
         public PickingEvtHandler() {
            // c.setFill(new Color(0.0, 1.0, 0.2, 0.5));
@@ -168,90 +238,59 @@ public class SelectCoordonnes{
                             new KeyValue(c.radiusProperty(), c.getRadius())),
                     new KeyFrame(Duration.millis(800),
                             new KeyValue(c.radiusProperty(), c.getRadius() * 2.5)));
-            
             timeline.setAutoReverse(true);
             timeline.setCycleCount(Timeline.INDEFINITE);
             timeline.play();
         }
+        
+        public Group getGroup() {
+        	return this.groupSelector;
+        }
 
         @Override
         public void handle(MouseEvent event) {
-            selectedPoint = event.getPickResult().getIntersectedPoint();
-
-            if (event.getEventType() != MouseEvent.MOUSE_CLICKED) {
-                return;
-            }
-
-            if (event.getButton() != MouseButton.SECONDARY) {
-                return;
-            }
-
-            if (!(event.getSource() instanceof Group)) {
-                return;
-            }
-
-            final Group group = (Group) event.getSource();
-
-            if (group.getParent() == null) {
-                return;
-            }
-
-            updateValue(group, false);
+        	
+        	if(event.getClickCount() == 1) {
+        		this.updateValue();
+        	}
+        	
+        	if(event.getClickCount() == 2) {
+        		
+	            selectedPoint = event.getPickResult().getIntersectedPoint();
+	            
+	            if (event.getEventType() != MouseEvent.MOUSE_CLICKED) {
+	                return;
+	            }
+	
+	            if (event.getButton() != MouseButton.PRIMARY) {
+	                return;
+	            }
+	            
+	            groupSelector.getChildren().add(c);
+	            
+	            c.toFront();
+	
+	            if (selectedPoint == null) {
+	                return;
+	            }
+	                
+	            c.setTranslateX(selectedPoint.getX());
+	            c.setTranslateY(selectedPoint.getY());
+	            c.setTranslateZ(selectedPoint.getZ());
+	            
+	            selectedPoint = new Point3D(
+	                    selectedPoint.getX() / scaleX,
+	                    selectedPoint.getY() / scaleY,
+	                    selectedPoint.getZ() / scaleZ);
+	        }
+        	
+        	event.consume();
         }
-
-        /**
-         * @return the function
-         */
-        public Function2D getFunction() {
-            return function;
-        }
-
-        /**
-         * @param function the function to set
-         */
-        public void setFunction(Function2D function) {
-            this.function = function;
-        }
-
-        private void updateValue(Group group, boolean scaled) {
-            
-            c.toFront();
-
-            if (selectedPoint == null) {
-                return;
-            }                  
-
-            if (c.getParent() != group && group != null) {
-                NodeUtil.addToParent(group, c);
-            }
-
-            if (!scaled) {
-                
-                c.setTranslateX(selectedPoint.getX());
-                c.setTranslateY(selectedPoint.getY());
-                c.setTranslateZ(selectedPoint.getZ());
-                
-                selectedPoint = new Point3D(
-                        selectedPoint.getX() / scaleX,
-                        selectedPoint.getY() / scaleY,
-                        selectedPoint.getZ() / scaleZ);
-            }
-
-//            System.out.println("point: " + selectedPoint);
-            if (selectedPoint != null) {
-                selectedValue = getFunction().run(selectedPoint.getX(),
-                        selectedPoint.getY());
-
-                if (selectionReceiver != null) {
-                    selectionReceiver.getValueObject().setValue(
-                            new SelectionResult(
-                                    selectedPoint, selectedValue));
-                }
-
-//                System.out.println("value = " + selectedValue);
-            } else {
-                selectedValue = null;
-            }
+        
+        public void updateValue(){
+        	if(groupSelector.getChildren().size() > 0) {
+        		groupSelector.getChildren().remove(0);
+        	}
         }
     }
 }

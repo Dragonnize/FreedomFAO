@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 
 public abstract class Information {
 	
+	public String TITLE = "Freedom FAO";
 	public static final double VERSION = 1.0;
 	Color COLOR_SCENE = Color.WHITE;
 	public final int DEBUG = 1; // Si 1 alors c'est en mode débugage sinon si c'est 0 c'est en mode application public.
@@ -29,6 +30,8 @@ public abstract class Information {
     double mouseDeltaY;
     
     double factor = 0.50;
+    
+    public String getTitle() { return this.TITLE; }
 	
 	public Class<? extends Information> getNameClass() { return this.getClass(); } // Retourne le nom de la classe courante.
 	

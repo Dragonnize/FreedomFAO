@@ -25,6 +25,8 @@ public class ImportFile {
 	public TriangleMesh getTriangleMesh() { return this.triangleMesh; }
 	public MeshView getMeshView() { return this.meshView; }
 	
+	public String getFileName() { return dialogue.getName(); }
+	
 	public void choiceFile() {
 		
 		// Boîte de sélection de fichier à partir du répertoire courant
@@ -43,6 +45,8 @@ public class ImportFile {
          
         // affichage
         dialogue.showOpenDialog(null);
+        
+        dialogue.getName();
         
         if(dialogue.getSelectedFile() != null) {
 		

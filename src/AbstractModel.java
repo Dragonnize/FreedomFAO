@@ -4,15 +4,22 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Group;
 import observer.Observable;
 import observer.Observer;
 
 public abstract class AbstractModel implements Observable{
 	
+	SimpleStringProperty ProgrammeName = new SimpleStringProperty();
+	
 	private ArrayList<Observer> listObserver = new ArrayList<Observer>();
 	
 	Group groupAxes;
+	
+	public boolean VisibleAxeX = true;
+	public boolean VisibleAxeY = true;
+	public boolean VisibleAxeZ = true;
 	
 	DoubleProperty cordX = new SimpleDoubleProperty();
 	DoubleProperty cordY = new SimpleDoubleProperty();

@@ -1,6 +1,7 @@
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -15,7 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.MeshView;
 import javafx.stage.Stage;
 
-public class ActionSubScene extends Information{
+public class ActionSubScene{
 	
 	final Xform cameraXform = new Xform();
     final Xform cameraXform2 = new Xform();
@@ -32,7 +33,68 @@ public class ActionSubScene extends Information{
     double SHIFT_MULTIPLIER = 0.1;
     double ALT_MULTIPLIER = 0.5;
     
+    double mousePosX, mouseOldX;
+    double mousePosY, mouseOldY;
+    double mousePosZ, mouseOldZ;
+    
+    public final double MODEL_SCALE_FACTOR = 0.5;
+	public final double MODEL_X_OFFSET = 0; // standard
+	public final double MODEL_Y_OFFSET = 0; // standard
+	public final double MODEL_MIN_Z = -800;
+	public final double MODEL_MAX_Z = 40;
+	public final double MODEL_MIN_X = 0;
+	public final double MODEL_MAX_X = 0;
+	public final double MODEL_MIN_Y = 0;
+	public final double MODEL_MAX_Y = 0;
+    
+    double mouseDeltaX;
+    double mouseDeltaY;
+    
+    DoubleProperty currentX = new SimpleDoubleProperty(); // cordonnée actuel en X.
+	DoubleProperty currentY = new SimpleDoubleProperty(); // cordonnée actuel en Y.
+	DoubleProperty currentZ = new SimpleDoubleProperty(); // cordonnée actuel en Z.
+    
     Color colorBackground = Color.BEIGE;
+    
+ // Ancienne cordonnées de la souris en X, Y et Z.
+ 	public void setMouseOldX(double X) { this.mouseOldX = X; }
+ 	public void setMouseOldY(double Y) { this.mouseOldY = Y; }
+ 	public void setMouseOldZ(double Z) { this.mouseOldZ = Z; }
+ 	
+ 	public final double getMouseOldX() { return this.mouseOldX; }
+ 	public final double getMouseOldY() { return this.mouseOldY; }
+ 	public final double getMouseOldZ() { return this.mouseOldZ; }
+ 	
+ 	// Nouvelles cordonnées de la souris en X, Y et Z.
+ 	public void setMouseX(double X) { this.mousePosX = X; }
+ 	public void setMouseY(double Y) { this.mousePosY = Y; }
+ 	public void setMouseZ(double Z) { this.mousePosZ = Z; }
+ 	
+ 	public final double getMouseX() { return this.mousePosX; }
+ 	public final double getMouseY() { return this.mousePosY; }
+ 	public final double getMouseZ() { return this.mousePosZ; }
+ 	
+ 	public DoubleProperty currentX() { return this.currentX; }
+ 	public DoubleProperty currentY() { return this.currentY; }
+ 	public DoubleProperty currentZ() { return this.currentZ; }
+ 	
+ 	public void setGetX(double X) { this.currentX.set(X); }
+ 	public void setGetY(double Y) { this.currentY.set(Y); }
+ 	public void setGetZ(double Z) { this.currentZ.set(Z); }
+ 	
+ 	public final double getDisplayX() { return this.currentX.get(); }
+ 	public final double getDisplayY() { return this.currentY.get(); }
+ 	public final double getDisplayZ() { return this.currentZ.get(); }
+ 	
+ 	public void setDeltaX(double currentX, double oldX){ this.mouseDeltaX = (currentX - oldX); }
+ 	public void setDeltaY(double currentY, double oldY){ this.mouseDeltaY = (currentY - oldY); }
+ 	
+ 	public final double getMouseDeltaX(){ return this.mouseDeltaX; }
+ 	public final double getMouseDeltaY(){ return this.mouseDeltaY; }
+ 	
+ 	public final double getX() { return this.currentX.doubleValue(); }
+ 	public final double getY() { return this.currentY.doubleValue(); }
+ 	public final double getZ() { return this.currentZ.doubleValue(); }
 
 	public ActionSubScene(Parent root, double width, double height) {
 		subScene = new SubScene(root, width, height);
@@ -70,7 +132,7 @@ public class ActionSubScene extends Information{
     	return this.cameraXform;
     }
 	
-	public void handleMouse(Scene scene, final Node root) {
+	public void handleMouse(Scene scene) {
     	
         subScene.setOnMousePressed(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -115,7 +177,6 @@ public class ActionSubScene extends Information{
                 } else if (event.isSecondaryButtonDown()) {
                 	
                     double z = getSubSceneCamera().getTranslateZ();
-                    System.out.println(z);
                     if(MODEL_MIN_Z < z) {
                     	double newZ = z + mouseDeltaX * modifierFactor * modifier;
                     	getSubSceneCamera().setTranslateZ(newZ);
@@ -132,8 +193,8 @@ public class ActionSubScene extends Information{
         });
     }
 	
-	public void handleKeyboard(final Node root, Stage window, PerspectiveCamera camera, Group axisGroup) {
-        
+	public void handleKeyboard(Stage window, PerspectiveCamera camera, Group axisGroup) {
+      
         subScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
@@ -228,6 +289,7 @@ public class ActionSubScene extends Information{
                         break;
                         
                     case F11:
+                    	System.out.print("hello world");
     	                if (window.isFullScreen()) {
     	                    window.setFullScreen(false);
     	                } else {

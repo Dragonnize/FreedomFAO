@@ -86,7 +86,7 @@ public class ActionScene {
 	
 	public void render() {
 		// Pour la version de développement
-		// ScenicView.show(scene);
+		//ScenicView.show(scene);
         
         scene.setCamera(camera);
     }
